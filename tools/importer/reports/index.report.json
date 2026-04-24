@@ -1,0 +1,14 @@
+{
+  "status": "success",
+  "url": "https://www.galleries.unsw.edu.au",
+  "path": "index",
+  "timestamp": "2026-04-24T03:00:51.126Z",
+  "title": "UNSW Galleries | UNSW Galleries",
+  "template": "homepage",
+  "blocks": [
+    "hero-gallery",
+    "cards-exhibition",
+    "cards-exhibition",
+    "columns-info"
+  ]
+}

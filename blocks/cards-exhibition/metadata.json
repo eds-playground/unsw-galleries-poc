@@ -1,0 +1,40 @@
+{
+  "variantName": "cards-exhibition",
+  "baseBlock": "cards",
+  "version": "1.0.0",
+  "created": "2026-04-24T02:45:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://www.galleries.unsw.edu.au",
+    "originPage": "UNSW Galleries homepage",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "grey",
+    "density": "compact",
+    "purpose": "exhibition-listing",
+    "imagePattern": "large",
+    "structure": "image + title + date-range"
+  },
+  "contentPattern": {
+    "structure": "image + title + date-range",
+    "buttonCount": 0,
+    "imageCount": 1
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "exhibition listing pages",
+      "event listing pages",
+      "gallery collection pages with image teasers"
+    ],
+    "notSuitableFor": [
+      "product cards with pricing",
+      "team member profiles",
+      "cards without images"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/index"],
+    "reuseCount": 1,
+    "lastUsed": "2026-04-24T02:45:00.000Z"
+  }
+}
