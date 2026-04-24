@@ -344,6 +344,10 @@ main .section.dark {
   padding: 0;
 }
 
+main .section.dark > div > .button-container:has(a[href$=".mp4"]) {
+  display: none;
+}
+
 main .section.dark h1,
 main .section.dark h2,
 main .section.dark h3,

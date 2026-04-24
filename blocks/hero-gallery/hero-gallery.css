@@ -5,12 +5,13 @@
 
 .hero-gallery {
   position: relative;
-  padding: 80px 24px;
-  min-height: 400px;
+  padding: 60px 24px;
+  min-height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
+  background-color: var(--dark-color);
 }
 
 .hero-gallery h1 {
@@ -34,7 +35,7 @@
 
 @media (width >= 900px) {
   .hero-gallery {
-    padding: 120px 32px;
-    min-height: 500px;
+    padding: 80px 32px;
+    min-height: 300px;
   }
 }
