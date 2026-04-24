@@ -1,0 +1,86 @@
+{
+  "metadata": {
+    "projectType": "doc"
+  },
+  "templates": [
+    {
+      "name": "homepage",
+      "urls": [
+        "https://www.galleries.unsw.edu.au"
+      ],
+      "description": "UNSW Galleries homepage with hero imagery, exhibition listings, and gallery information",
+      "blocks": [
+        {
+          "name": "hero-gallery",
+          "instances": [
+            ".section-wrapper.hero_section"
+          ]
+        },
+        {
+          "name": "cards-exhibition",
+          "instances": [
+            ".view-display-id-block_1 .teaser-items.grid",
+            ".view-display-id-block_2 .teaser-items.grid"
+          ]
+        },
+        {
+          "name": "columns-info",
+          "instances": [
+            ".cta-tile"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1",
+          "name": "Hero",
+          "selector": ".section-wrapper.hero_section",
+          "style": "dark",
+          "blocks": [
+            "hero-gallery"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2",
+          "name": "Current & Upcoming Exhibitions",
+          "selector": ".section-wrapper.onecolumn_section.bg-alternative:has(.view-display-id-block_1)",
+          "style": "grey",
+          "blocks": [
+            "cards-exhibition"
+          ],
+          "defaultContent": [
+            ".section-wrapper.onecolumn_section.bg-alternative:has(.view-display-id-block_1) .bs_grid h3",
+            ".section-wrapper.onecolumn_section.bg-alternative:has(.view-display-id-block_1) .bs_grid .btn"
+          ]
+        },
+        {
+          "id": "section-3",
+          "name": "Upcoming Programs",
+          "selector": ".section-wrapper.onecolumn_section:not(.bg-alternative):has(.view-display-id-block_2)",
+          "style": null,
+          "blocks": [
+            "cards-exhibition"
+          ],
+          "defaultContent": [
+            ".section-wrapper.onecolumn_section:not(.bg-alternative):has(.view-display-id-block_2) .bs_grid h3",
+            ".section-wrapper.onecolumn_section:not(.bg-alternative):has(.view-display-id-block_2) .bs_grid .btn"
+          ]
+        },
+        {
+          "id": "section-4",
+          "name": "About Us",
+          "selector": ".section-wrapper.onecolumn_section.bg-alternative:has(.cta-tile)",
+          "style": "grey",
+          "blocks": [
+            "columns-info"
+          ],
+          "defaultContent": [
+            ".section-wrapper.onecolumn_section.bg-alternative:has(.cta-tile) .bs_grid h3",
+            ".section-wrapper.onecolumn_section.bg-alternative:has(.cta-tile) .bs_grid .btn"
+          ]
+        }
+      ]
+    }
+  ]
+}

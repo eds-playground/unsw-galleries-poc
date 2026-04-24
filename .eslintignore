@@ -1,2 +1,6 @@
 helix-importer-ui
 *.min.js
+tools/importer/*.bundle.js
+tools/importer/import-*.js
+tools/importer/parsers/
+tools/importer/transformers/

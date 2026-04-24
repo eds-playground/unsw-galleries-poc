@@ -1,0 +1,40 @@
+.hero-gallery-container .hero-gallery-wrapper {
+  max-width: unset;
+  padding: 0;
+}
+
+.hero-gallery {
+  position: relative;
+  padding: 80px 24px;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.hero-gallery h1 {
+  max-width: 1200px;
+  margin: 0 auto;
+  color: var(--background-color);
+  font-size: var(--heading-font-size-xxl);
+}
+
+.hero-gallery picture {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+}
+
+.hero-gallery img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+@media (width >= 900px) {
+  .hero-gallery {
+    padding: 120px 32px;
+    min-height: 500px;
+  }
+}
