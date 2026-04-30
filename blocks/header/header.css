@@ -4,6 +4,7 @@ header .nav-wrapper {
   width: 100%;
   z-index: 2;
   position: fixed;
+  border-bottom: 1px solid var(--border-color);
 }
 
 header nav {
@@ -31,16 +32,44 @@ header nav[aria-expanded='true'] {
 }
 
 @media (width >= 900px) {
+  header {
+    height: auto;
+  }
+
   header .nav-wrapper {
     position: relative;
   }
 
   header nav {
-    display: flex;
-    justify-content: space-between;
-    gap: 0 32px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) max-content;
+    grid-template-rows: auto auto;
+    gap: var(--spacing-s) var(--spacing-l);
+    align-items: center;
     max-width: 1264px;
-    padding: 0 32px;
+    padding: var(--spacing-s) var(--spacing-l);
+    height: auto;
+    min-height: var(--nav-height);
+  }
+
+  header nav .nav-brand {
+    grid-column: 1;
+    grid-row: 1;
+    flex-basis: auto;
+  }
+
+  header nav .nav-tools {
+    grid-column: 2;
+    grid-row: 1;
+    place-self: start end;
+  }
+
+  header nav .nav-sections {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
+    padding-top: var(--spacing-s);
+    border-top: 1px solid var(--border-color);
   }
 
   header nav[aria-expanded='true'] {
@@ -224,13 +253,22 @@ header nav .nav-sections ul > li > ul > li {
 
   header nav .nav-sections ul {
     display: flex;
+    flex-wrap: wrap;
     gap: 24px;
     margin: 0;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li > strong {
+    display: inline-block;
+    padding-bottom: 2px;
+    border-bottom: 3px solid currentcolor;
+    font-weight: 700;
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li {
     flex: 0 1 auto;
     position: relative;
+    font-weight: 700;
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li > ul {
@@ -242,10 +280,12 @@ header nav .nav-sections ul > li > ul > li {
     display: block;
     position: absolute;
     left: -24px;
-    width: 200px;
+    min-width: 220px;
+    width: max-content;
+    max-width: min(320px, 90vw);
     top: 150%;
     padding: 16px;
-    background-color: var(--light-color);
+    background-color: #eef1f4;
     white-space: initial;
   }
 
@@ -258,7 +298,7 @@ header nav .nav-sections ul > li > ul > li {
     height: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-bottom: 8px solid var(--light-color);
+    border-bottom: 8px solid #eef1f4;
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li > ul > li {
@@ -266,7 +306,29 @@ header nav .nav-sections ul > li > ul > li {
   }
 }
 
-/* tools */
+/* tools (social / search icons — horizontal row)
+   Fragment sections wrap <p> links in .default-content-wrapper; flex must target that wrapper. */
 header nav .nav-tools {
   grid-area: tools;
+}
+
+header nav .nav-tools .default-content-wrapper {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+header nav .nav-tools a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+header nav .nav-tools .icon img {
+  width: 22px;
+  height: 22px;
+  display: block;
 }
