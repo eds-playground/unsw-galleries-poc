@@ -1,0 +1,7 @@
+{
+  "repositoryId": "delivery-p106442-e1666219.adobeaemcloud.com",
+  "imsOrgId": "09CF60665F98CEF90A495FF8@AdobeOrg",
+  "imsClientId": "exc_app",
+  "imsScope": "AdobeID,openid,read_organizations,additional_info.projectedProductContext",
+  "env": "prod"
+}
