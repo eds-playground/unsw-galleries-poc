@@ -1,0 +1,10 @@
+{
+  "mappings": [
+    "/content/unsw-galleries/:/",
+    "/content/unsw-galleries/configuration:/.helix/config.json"
+  ],
+  "includes": [
+    "/content/unsw-galleries/",
+    "/content/dam/unsw-galleries/"
+  ]
+}
