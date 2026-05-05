@@ -185,11 +185,15 @@ export default async function decorate(block) {
                   ${logoEl ? logoEl.outerHTML : ''}
               </div>
 
+              <button type="button" class="top-header__hamburger" aria-controls="top-header-nav" aria-expanded="false" aria-label="Open navigation">
+                <span class="top-header__hamburger-icon"></span>
+              </button>
+
               <div class="top-header__social">
                   ${Array.from(socialLinks).map(link => link.outerHTML).join('')}
               </div>
           </div>
-          <div class="top-header__nav">
+          <div class="top-header__nav" id="top-header-nav">
               ${navSections ? navSections.outerHTML : ''}
           </div>
       </div>
@@ -216,42 +220,81 @@ export default async function decorate(block) {
 
   block.innerHTML = headerHtml;
 
-  // Wire up submenu open/close on the rebuilt nav
+  // Wire up mobile menu and submenu open/close on the rebuilt nav
+  const topHeader = block.querySelector('.top-header');
+  const mobileToggle = block.querySelector('.top-header__hamburger');
   const topNav = block.querySelector('.top-header__nav');
+
   if (topNav) {
     const navDrops = topNav.querySelectorAll('.nav-drop');
 
-    const closeAll = (except = null) => {
+    const setActiveSubmenu = (drop) => {
       navDrops.forEach((d) => {
-        if (d !== except) d.setAttribute('aria-expanded', 'false');
+        d.setAttribute('aria-expanded', d === drop ? 'true' : 'false');
       });
     };
+
+    const setMobileOpen = (open) => {
+      if (!topHeader || !mobileToggle) return;
+      topHeader.dataset.mobileOpen = open ? 'true' : 'false';
+      mobileToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      mobileToggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+      document.body.style.overflow = open ? 'hidden' : '';
+      if (!open) setActiveSubmenu(null);
+    };
+
+    if (mobileToggle) {
+      mobileToggle.addEventListener('click', () => {
+        const isOpen = topHeader.dataset.mobileOpen === 'true';
+        setMobileOpen(!isOpen);
+      });
+    }
 
     navDrops.forEach((drop) => {
       drop.setAttribute('aria-haspopup', 'true');
       drop.setAttribute('aria-expanded', 'false');
 
+      // Prepend a "Back" row inside each submenu (visible on mobile only via CSS)
+      const submenu = drop.querySelector(':scope > ul');
+      if (submenu) {
+        const backLi = document.createElement('li');
+        backLi.className = 'nav-back';
+        const backBtn = document.createElement('button');
+        backBtn.type = 'button';
+        backBtn.setAttribute('aria-label', 'Back');
+        backBtn.innerHTML = '\u2039 Back';
+        backBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          setActiveSubmenu(null);
+        });
+        backLi.append(backBtn);
+        submenu.prepend(backLi);
+      }
+
       const trigger = drop.querySelector(':scope > p > a, :scope > p > strong');
       if (!trigger) return;
 
       const toggle = (e) => {
-        const expanded = drop.getAttribute('aria-expanded') === 'true';
         if (e) e.preventDefault();
-        closeAll(drop);
-        drop.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+        const expanded = drop.getAttribute('aria-expanded') === 'true';
+        setActiveSubmenu(expanded ? null : drop);
       };
 
-      trigger.addEventListener('click', toggle);
+      trigger.addEventListener('click', (e) => {
+        if (!isDesktop.matches) {
+          e.preventDefault();
+          setActiveSubmenu(drop);
+          return;
+        }
+        toggle(e);
+      });
       trigger.addEventListener('keydown', (e) => {
         if (e.code === 'Enter' || e.code === 'Space') toggle(e);
       });
 
       // Hover support: open on enter, close on leave (desktop only)
       drop.addEventListener('mouseenter', () => {
-        if (isDesktop.matches) {
-          closeAll(drop);
-          drop.setAttribute('aria-expanded', 'true');
-        }
+        if (isDesktop.matches) setActiveSubmenu(drop);
       });
       drop.addEventListener('mouseleave', () => {
         if (isDesktop.matches) drop.setAttribute('aria-expanded', 'false');
@@ -259,10 +302,21 @@ export default async function decorate(block) {
     });
 
     document.addEventListener('click', (e) => {
-      if (!e.target.closest('.top-header__nav .nav-drop')) closeAll();
+      if (isDesktop.matches && !e.target.closest('.top-header__nav .nav-drop')) {
+        setActiveSubmenu(null);
+      }
     });
     document.addEventListener('keydown', (e) => {
-      if (e.code === 'Escape') closeAll();
+      if (e.code === 'Escape') {
+        setActiveSubmenu(null);
+        if (!isDesktop.matches) setMobileOpen(false);
+      }
+    });
+
+    // Reset state when crossing the desktop breakpoint
+    isDesktop.addEventListener('change', () => {
+      setMobileOpen(false);
+      setActiveSubmenu(null);
     });
   }
 }
