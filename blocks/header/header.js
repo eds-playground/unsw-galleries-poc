@@ -214,5 +214,55 @@ export default async function decorate(block) {
   navWrapper.append(nav);
   block.append(navWrapper);
 
-  block.innerHTML = headerHtml
+  block.innerHTML = headerHtml;
+
+  // Wire up submenu open/close on the rebuilt nav
+  const topNav = block.querySelector('.top-header__nav');
+  if (topNav) {
+    const navDrops = topNav.querySelectorAll('.nav-drop');
+
+    const closeAll = (except = null) => {
+      navDrops.forEach((d) => {
+        if (d !== except) d.setAttribute('aria-expanded', 'false');
+      });
+    };
+
+    navDrops.forEach((drop) => {
+      drop.setAttribute('aria-haspopup', 'true');
+      drop.setAttribute('aria-expanded', 'false');
+
+      const trigger = drop.querySelector(':scope > p > a, :scope > p > strong');
+      if (!trigger) return;
+
+      const toggle = (e) => {
+        const expanded = drop.getAttribute('aria-expanded') === 'true';
+        if (e) e.preventDefault();
+        closeAll(drop);
+        drop.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+      };
+
+      trigger.addEventListener('click', toggle);
+      trigger.addEventListener('keydown', (e) => {
+        if (e.code === 'Enter' || e.code === 'Space') toggle(e);
+      });
+
+      // Hover support: open on enter, close on leave (desktop only)
+      drop.addEventListener('mouseenter', () => {
+        if (isDesktop.matches) {
+          closeAll(drop);
+          drop.setAttribute('aria-expanded', 'true');
+        }
+      });
+      drop.addEventListener('mouseleave', () => {
+        if (isDesktop.matches) drop.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.top-header__nav .nav-drop')) closeAll();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Escape') closeAll();
+    });
+  }
 }
