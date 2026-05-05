@@ -274,18 +274,34 @@ export default async function decorate(block) {
       const trigger = drop.querySelector(':scope > p > a, :scope > p > strong');
       if (!trigger) return;
 
+      // Add a chevron toggle button: tappable target for drill-down on mobile
+      // (text link still navigates normally). Hidden on desktop via CSS.
+      const dropP = drop.querySelector(':scope > p');
+      if (dropP) {
+        const toggleBtn = document.createElement('button');
+        toggleBtn.type = 'button';
+        toggleBtn.className = 'nav-drop-toggle';
+        toggleBtn.setAttribute('aria-haspopup', 'menu');
+        toggleBtn.setAttribute('aria-label', `Open ${trigger.textContent.trim()} submenu`);
+        toggleBtn.innerHTML = '<span class="nav-drop-toggle-icon" aria-hidden="true"></span>';
+        toggleBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setActiveSubmenu(drop);
+        });
+        dropP.appendChild(toggleBtn);
+      }
+
       const toggle = (e) => {
         if (e) e.preventDefault();
         const expanded = drop.getAttribute('aria-expanded') === 'true';
         setActiveSubmenu(expanded ? null : drop);
       };
 
+      // Desktop click on the link toggles the dropdown (matches existing hover UX);
+      // on mobile the link navigates normally and the chevron button drills down.
       trigger.addEventListener('click', (e) => {
-        if (!isDesktop.matches) {
-          e.preventDefault();
-          setActiveSubmenu(drop);
-          return;
-        }
+        if (!isDesktop.matches) return;
         toggle(e);
       });
       trigger.addEventListener('keydown', (e) => {

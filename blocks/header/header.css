@@ -386,7 +386,8 @@ header nav .nav-tools .nav-search .icon svg {
 }
 
 .top-header__logo img {
-    height: 32px;
+    height: 44px;
+    display: block;
 }
 
 @media (width >=900px) {
@@ -598,6 +599,11 @@ header nav .nav-tools .nav-search .icon svg {
         & .nav-back {
             display: none;
         }
+
+        /* Chevron toggle is mobile-only; desktop opens via hover/click on the link */
+        & .nav-drop-toggle {
+            display: none;
+        }
     }
 }
 
@@ -619,7 +625,7 @@ header nav .nav-tools .nav-search .icon svg {
         z-index: 4;
     }
 
-    .top-header__nav .default-content-wrapper > ul {
+    .top-header__nav .default-content-wrapper>ul {
         margin: 0;
         padding: 0;
         list-style: none;
@@ -627,22 +633,24 @@ header nav .nav-tools .nav-search .icon svg {
         flex-direction: column;
     }
 
-    .top-header__nav .default-content-wrapper > ul > li {
+    .top-header__nav .default-content-wrapper>ul>li {
         font-weight: 400;
     }
 
-    .top-header__nav .default-content-wrapper > ul > li > p {
+    .top-header__nav .default-content-wrapper>ul>li>p {
         margin: 0;
-        padding: 1.75rem 1.5rem;
+        padding: 0;
         font-size: 1.5rem;
         line-height: 1.2;
         font-family: roboto, sans-serif;
-        position: relative;
+        display: flex;
+        align-items: stretch;
     }
 
-    .top-header__nav .default-content-wrapper > ul > li > p > a,
-    .top-header__nav .default-content-wrapper > ul > li > p > strong {
-        padding: 0;
+    .top-header__nav .default-content-wrapper>ul>li>p>a,
+    .top-header__nav .default-content-wrapper>ul>li>p>strong {
+        flex: 1;
+        padding: 1.75rem 1.5rem;
         border: 0;
         font-size: inherit;
         line-height: inherit;
@@ -651,25 +659,35 @@ header nav .nav-tools .nav-search .icon svg {
         display: block;
     }
 
-    .top-header__nav .default-content-wrapper > ul > li > p > strong {
+    .top-header__nav .default-content-wrapper>ul>li>p>strong {
         font-weight: 700;
     }
 
-    /* Right chevron on items that have a submenu */
-    .top-header__nav .nav-drop > p::after {
-        content: '';
-        position: absolute;
-        right: 1.75rem;
-        top: 50%;
+    /* Chevron toggle button: separate tap target from the link.
+       Tapping the link navigates; tapping this button drills into the submenu. */
+    .top-header__nav .nav-drop-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        padding: 1.75rem 1.5rem;
+        background: transparent;
+        border: 0;
+        color: inherit;
+        cursor: pointer;
+    }
+
+    .top-header__nav .nav-drop-toggle-icon {
+        display: block;
         width: 12px;
         height: 12px;
         border: 2px solid currentColor;
         border-width: 2px 2px 0 0;
-        transform: translateY(-50%) rotate(45deg);
+        transform: rotate(45deg);
     }
 
     /* Submenu screen: full-screen, slides in from right */
-    .top-header__nav .nav-drop > ul {
+    .top-header__nav .nav-drop>ul {
         position: fixed;
         top: var(--mobile-header-height, 64px);
         left: 0;
@@ -685,15 +703,15 @@ header nav .nav-tools .nav-search .icon svg {
         overflow-y: auto;
     }
 
-    .top-header__nav .nav-drop[aria-expanded="true"] > ul {
+    .top-header__nav .nav-drop[aria-expanded="true"]>ul {
         transform: translateX(0);
     }
 
-    .top-header__nav .nav-drop > ul > li {
+    .top-header__nav .nav-drop>ul>li {
         font-weight: 400;
     }
 
-    .top-header__nav .nav-drop > ul > li > a {
+    .top-header__nav .nav-drop>ul>li>a {
         display: block;
         padding: 1.75rem 1.5rem;
         font-size: 1.5rem;
