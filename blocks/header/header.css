@@ -382,9 +382,16 @@ header nav .nav-tools .nav-search .icon svg {
     padding: 1rem 0;
 }
 
+
 .top-header__logo img {
-    height: 71px;
-    width: auto;
+    height: 32px;
+}
+
+@media (width >=900px) {
+    .top-header__logo img {
+        height: 71px;
+
+    }
 }
 
 .top-header__social {

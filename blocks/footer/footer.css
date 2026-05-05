@@ -15,7 +15,8 @@ footer .footer p {
 
 /* ---------- Top band: brand row above a 5-column grid ---------- */
 footer .footer .footer-top {
-    background-color: var(--dark-color);
+    padding-top: 64px;
+    background-color: #181716;
     color: var(--background-color);
 }
 
@@ -26,6 +27,9 @@ footer .footer .footer-top-inner {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-l);
+    background: url(/icons/footer-background.svg) #181716 center 45px no-repeat;
+    background-size: 768px;
+    background-position: 10vw 75px;
 }
 
 footer .footer .footer-brand-top {
@@ -80,9 +84,9 @@ footer .footer .footer-address strong {
 
 footer .footer .footer-col-title {
     font-family: var(--heading-font-family);
-    font-size: var(--heading-font-size-s);
+    font-size: 24px;
     font-weight: 700;
-    margin: 0 0 var(--spacing-s);
+    margin: 0 0 var(--spacing-m);
     color: var(--background-color);
 }
 
@@ -160,7 +164,7 @@ footer .footer .footer-logos img {
 
 /* ---------- Acknowledgement band ---------- */
 footer .footer .footer-acknowledgement {
-    background-color: var(--accent-color);
+    background-color: #ffdc00;
     color: var(--text-color);
 }
 
@@ -202,6 +206,8 @@ footer .footer .footer-acknowledgement-text p {
     font-size: var(--body-font-size-xs);
     line-height: 1.6;
     margin: 0 0 var(--spacing-s);
+    font-weight: 300;
+    max-width: 672px;
 }
 
 footer .footer .footer-acknowledgement-text a {
@@ -255,7 +261,7 @@ footer .footer .footer-policies a {
     text-decoration: none;
     font-family: var(--mono-font-family);
     font-size: var(--body-font-size-xs);
-    font-weight: 500;
+    font-weight: 700;
 }
 
 footer .footer .footer-policies a:hover {
