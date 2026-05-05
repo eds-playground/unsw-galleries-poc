@@ -1,4 +1,4 @@
-import { getMetadata } from '../../scripts/aem.js';
+import { getMetadata, decorateIcons } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
 // media query match that indicates mobile/tablet width
@@ -137,6 +137,22 @@ export default async function decorate(block) {
     brandLink.closest('.button-container').className = '';
   }
 
+  const navTools = nav.querySelector('.nav-tools');
+  const toolsWrapper = navTools?.querySelector('.default-content-wrapper');
+  if (toolsWrapper) {
+    const searchBtn = document.createElement('button');
+    searchBtn.type = 'button';
+    searchBtn.className = 'nav-search';
+    searchBtn.setAttribute('aria-label', 'Search');
+    searchBtn.innerHTML = '<span class="icon icon-search"></span>';
+    searchBtn.addEventListener('click', () => {
+      // eslint-disable-next-line no-console
+      console.log('Search clicked');
+    });
+    toolsWrapper.append(searchBtn);
+    decorateIcons(toolsWrapper);
+  }
+
   const navSections = nav.querySelector('.nav-sections');
   if (navSections) {
     navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
@@ -150,6 +166,35 @@ export default async function decorate(block) {
       });
     });
   }
+
+  const logoEl = navBrand.querySelector('.nav-brand img');
+  if (logoEl) {
+    logoEl.removeAttribute('width');
+    logoEl.removeAttribute('height');
+  }
+
+  const socialLinks = nav.querySelectorAll('.nav-tools a, .nav-tools button');
+  const navLinks = nav.querySelectorAll('.nav-sections u');
+
+
+  const headerHtml = `
+    <div class="top-header">
+      <div class="top-header__inner">
+          <div class="top-header__top">
+              <div class="top-header__logo">
+                  ${logoEl ? logoEl.outerHTML : ''}
+              </div>
+
+              <div class="top-header__social">
+                  ${Array.from(socialLinks).map(link => link.outerHTML).join('')}
+              </div>
+          </div>
+          <div class="top-header__nav">
+              ${navSections ? navSections.outerHTML : ''}
+          </div>
+      </div>
+    </div>
+  `;
 
   // hamburger for mobile
   const hamburger = document.createElement('div');
@@ -168,4 +213,6 @@ export default async function decorate(block) {
   navWrapper.className = 'nav-wrapper';
   navWrapper.append(nav);
   block.append(navWrapper);
+
+  block.innerHTML = headerHtml
 }

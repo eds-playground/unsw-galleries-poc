@@ -5,13 +5,17 @@ export default function decorate(block) {
   // setup image columns
   [...block.children].forEach((row) => {
     [...row.children].forEach((col) => {
-      const pic = col.querySelector('picture');
-      if (pic) {
-        const picWrapper = pic.closest('div');
-        if (picWrapper && picWrapper.children.length === 1) {
-          // picture is only content in column
-          picWrapper.classList.add('columns-info-img-col');
-        }
+
+      const link = col.querySelector('a');
+
+      // wrap the col's inner html with the link if it exists, and remove other links from col but keep their content
+      if (link) {
+        const href = link.href;
+        const innerHTML = col.innerHTML.replace(/<a[^>]*>(.*?)<\/a>/g, '$1');
+        col.innerHTML = `<a href="${href}">${innerHTML}</a>`;
+      } else {
+        // if no link, just remove any links but keep their content
+        col.innerHTML = col.innerHTML.replace(/<a[^>]*>(.*?)<\/a>/g, '$1');
       }
     });
   });
