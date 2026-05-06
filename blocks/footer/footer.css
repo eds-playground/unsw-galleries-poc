@@ -235,7 +235,7 @@ footer .footer .footer-acknowledgement-text a:hover {
 
 /* ---------- Policy links band ---------- */
 footer .footer .footer-policies {
-    background-color: var(--accent-color);
+    background-color: #ffdc00;
     color: var(--text-color);
 }
 
