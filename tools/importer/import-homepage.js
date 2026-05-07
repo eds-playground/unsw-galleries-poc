@@ -1,94 +1,127 @@
 /* eslint-disable */
 /* global WebImporter */
 
-import heroGalleryParser from './parsers/hero-gallery.js';
-import cardsExhibitionParser from './parsers/cards-exhibition.js';
-import columnsInfoParser from './parsers/columns-info.js';
+import heroBannerParser from './parsers/hero-banner.js';
+import cardsFeatureParser from './parsers/cards-feature.js';
+import columnsMediaParser from './parsers/columns-media.js';
+import carouselCampusParser from './parsers/carousel-campus.js';
 
-import galleriesCleanupTransformer from './transformers/galleries-cleanup.js';
-import galleriesSectionsTransformer from './transformers/galleries-sections.js';
-
-const parsers = {
-  'hero-gallery': heroGalleryParser,
-  'cards-exhibition': cardsExhibitionParser,
-  'columns-info': columnsInfoParser,
-};
+import holmesglenCleanupTransformer from './transformers/holmesglen-cleanup.js';
+import holmesglenSectionsTransformer from './transformers/holmesglen-sections.js';
 
 const PAGE_TEMPLATE = {
   name: 'homepage',
-  description: 'UNSW Galleries homepage with hero imagery, exhibition listings, and gallery information',
+  description: 'Holmesglen Institute homepage with hero banner, course categories, news, and campus information',
   urls: [
-    'https://www.galleries.unsw.edu.au',
+    'https://www.holmesglen.edu.au/',
   ],
   blocks: [
     {
-      name: 'hero-gallery',
+      name: 'hero-banner',
       instances: [
-        '.section-wrapper.hero_section',
+        '.carousel__heroBanner .teaser__hero-banner',
       ],
     },
     {
-      name: 'cards-exhibition',
+      name: 'cards-feature',
       instances: [
-        '.view-display-id-block_1 .teaser-items.grid',
-        '.view-display-id-block_2 .teaser-items.grid',
+        '.container__browseByStudyArea .container__browseby',
+        '.multiSlideCarousel__demand-skills',
+        '.container__3-col-grid .teaser__v2--image-left-aligned',
       ],
     },
     {
-      name: 'columns-info',
+      name: 'columns-media',
       instances: [
-        '.cta-tile',
+        '.container__embed3item__layout .cmp-embed',
+        '.teaser__v1--image-right',
+      ],
+    },
+    {
+      name: 'carousel-campus',
+      instances: [
+        '.multiSlideCarousel__course-detail',
       ],
     },
   ],
   sections: [
     {
       id: 'section-1',
-      name: 'Hero',
-      selector: '.section-wrapper.hero_section',
+      name: 'Hero Banner',
+      selector: '.carousel__heroBanner',
       style: 'dark',
-      blocks: ['hero-gallery'],
+      blocks: ['hero-banner'],
       defaultContent: [],
     },
     {
       id: 'section-2',
-      name: 'Current & Upcoming Exhibitions',
-      selector: '.section-wrapper.onecolumn_section.bg-alternative:has(.view-display-id-block_1)',
-      style: 'grey',
-      blocks: ['cards-exhibition'],
-      defaultContent: [
-        '.section-wrapper.onecolumn_section.bg-alternative:has(.view-display-id-block_1) .bs_grid h3',
-        '.section-wrapper.onecolumn_section.bg-alternative:has(.view-display-id-block_1) .bs_grid .btn',
-      ],
+      name: 'Browse by Study Area',
+      selector: '.container__browseByStudyArea',
+      style: null,
+      blocks: ['cards-feature'],
+      defaultContent: ['.container__browseByStudyArea .cmp-title__text'],
     },
     {
       id: 'section-3',
-      name: 'Upcoming Programs',
-      selector: '.section-wrapper.onecolumn_section:not(.bg-alternative):has(.view-display-id-block_2)',
+      name: 'Study Levels',
+      selector: '.container__browseby:nth-of-type(2)',
       style: null,
-      blocks: ['cards-exhibition'],
-      defaultContent: [
-        '.section-wrapper.onecolumn_section:not(.bg-alternative):has(.view-display-id-block_2) .bs_grid h3',
-        '.section-wrapper.onecolumn_section:not(.bg-alternative):has(.view-display-id-block_2) .bs_grid .btn',
-      ],
+      blocks: [],
+      defaultContent: ['.container__browseby .cmp-title__text'],
     },
     {
       id: 'section-4',
-      name: 'About Us',
-      selector: '.section-wrapper.onecolumn_section.bg-alternative:has(.cta-tile)',
+      name: 'Student Testimonials',
+      selector: '.container__embed3item__layout',
+      style: null,
+      blocks: ['columns-media'],
+      defaultContent: ['.container__embed3item__layout .cmp-title__text'],
+    },
+    {
+      id: 'section-5',
+      name: 'Study In-Demand Skills',
+      selector: '.container__study-in-demand',
+      style: 'brand-primary',
+      blocks: ['cards-feature'],
+      defaultContent: ['.teaser__studydemand .cmp-teaser__title', '.teaser__studydemand .cmp-teaser__description'],
+    },
+    {
+      id: 'section-6',
+      name: 'Feature Cards',
+      selector: '.container__pt-xl-80:has(.container__3-col-grid)',
+      style: null,
+      blocks: ['cards-feature'],
+      defaultContent: [],
+    },
+    {
+      id: 'section-7',
+      name: 'International Student',
+      selector: '.container__pt-xl-40:has(.teaser__v1--image-right)',
       style: 'grey',
-      blocks: ['columns-info'],
-      defaultContent: [
-        '.section-wrapper.onecolumn_section.bg-alternative:has(.cta-tile) .bs_grid h3',
-        '.section-wrapper.onecolumn_section.bg-alternative:has(.cta-tile) .bs_grid .btn',
-      ],
+      blocks: ['columns-media'],
+      defaultContent: [],
+    },
+    {
+      id: 'section-8',
+      name: 'Campus Carousel',
+      selector: '.container__bg-primary:has(.multiSlideCarousel__course-detail)',
+      style: 'dark',
+      blocks: ['carousel-campus'],
+      defaultContent: [],
     },
   ],
 };
 
+const parsers = {
+  'hero-banner': heroBannerParser,
+  'cards-feature': cardsFeatureParser,
+  'columns-media': columnsMediaParser,
+  'carousel-campus': carouselCampusParser,
+};
+
 const transformers = [
-  galleriesCleanupTransformer,
-  ...(PAGE_TEMPLATE.sections && PAGE_TEMPLATE.sections.length > 1 ? [galleriesSectionsTransformer] : []),
+  holmesglenCleanupTransformer,
+  ...(PAGE_TEMPLATE.sections && PAGE_TEMPLATE.sections.length > 1 ? [holmesglenSectionsTransformer] : []),
 ];
 
 function executeTransformers(hookName, element, payload) {

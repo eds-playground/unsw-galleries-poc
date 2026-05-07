@@ -4,7 +4,6 @@ header .nav-wrapper {
   width: 100%;
   z-index: 2;
   position: fixed;
-  border-bottom: 1px solid var(--border-color);
 }
 
 header nav {
@@ -24,26 +23,24 @@ header nav {
 
 header nav[aria-expanded='true'] {
   grid-template:
-    'hamburger brand tools' var(--nav-height)
-    'sections sections sections' 1fr / auto 1fr auto;
+    'hamburger brand' var(--nav-height)
+    'sections sections' 1fr
+    'tools tools' var(--nav-height) / auto 1fr;
   overflow-y: auto;
   min-height: 100dvh;
 }
 
 @media (width >= 900px) {
   header .nav-wrapper {
-    position: fixed;
+    position: relative;
   }
 
   header nav {
-    display: grid;
-    grid-template:
-      'brand . tools' auto
-      'sections sections sections' auto / auto 1fr auto;
-    gap: 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 0 32px;
     max-width: 1264px;
     padding: 0 32px;
-    height: auto;
   }
 
   header nav[aria-expanded='true'] {
@@ -59,11 +56,6 @@ header nav p {
 
 header nav a:any-link {
   color: currentcolor;
-  text-decoration: none;
-}
-
-header nav a:hover {
-  text-decoration: none;
 }
 
 /* hamburger */
@@ -150,15 +142,14 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
 /* brand */
 header .nav-brand {
   grid-area: brand;
-  flex-basis: auto;
-  font-size: var(--body-font-size-s);
+  flex-basis: 128px;
+  font-size: var(--heading-font-size-s);
   font-weight: 700;
   line-height: 1;
-  padding: 12px 0;
 }
 
 header nav .nav-brand img {
-  width: 160px;
+  width: 128px;
   height: auto;
 }
 
@@ -183,7 +174,7 @@ header nav .nav-sections ul {
 }
 
 header nav .nav-sections ul > li {
-  font-weight: 400;
+  font-weight: 500;
 }
 
 header nav .nav-sections ul > li > ul {
@@ -194,19 +185,11 @@ header nav .nav-sections ul > li > ul > li {
   font-weight: 400;
 }
 
-/* first item is UNSW Galleries brand name */
-header nav .nav-sections .default-content-wrapper > ul > li:first-child {
-  font-family: var(--heading-font-family);
-  font-weight: 700;
-}
-
 @media (width >= 900px) {
   header nav .nav-sections {
     display: block;
     visibility: visible;
     white-space: nowrap;
-    padding: 12px 0;
-    border-top: 1px solid var(--border-color);
   }
 
   header nav[aria-expanded='true'] .nav-sections {
@@ -283,19 +266,7 @@ header nav .nav-sections .default-content-wrapper > ul > li:first-child {
   }
 }
 
-/* tools - social icons */
+/* tools */
 header nav .nav-tools {
   grid-area: tools;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-header nav .nav-tools p {
-  display: inline-flex;
-}
-
-header nav .nav-tools .icon {
-  width: 20px;
-  height: 20px;
 }

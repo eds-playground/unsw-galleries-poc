@@ -1,0 +1,32 @@
+{
+  "variantName": "hero-banner",
+  "baseBlock": "hero",
+  "version": "1.0.0",
+  "created": "2026-05-07T03:04:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://www.holmesglen.edu.au/",
+    "originPage": "Holmesglen Institute homepage",
+    "blockPosition": "top"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "dark",
+    "density": "spacious",
+    "purpose": "education-hero",
+    "imagePattern": "background",
+    "structure": "pretitle + heading + description + 2 CTAs"
+  },
+  "contentPattern": {
+    "structure": "pretitle + heading + description + 2 CTAs",
+    "buttonCount": 2,
+    "imageCount": 1
+  },
+  "reuseGuidance": {
+    "suitableFor": ["education landing pages", "promotional banner sections", "pages with background image heroes and multiple CTAs"],
+    "notSuitableFor": ["minimal text-only heroes", "pages without background images"]
+  },
+  "usage": {
+    "pagesUsing": ["/index"],
+    "reuseCount": 1,
+    "lastUsed": "2026-05-07T03:04:00.000Z"
+  }
+}

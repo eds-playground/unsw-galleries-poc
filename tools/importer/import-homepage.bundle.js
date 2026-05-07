@@ -1,3 +1,4 @@
+/* eslint-disable */
 var CustomImportScript = (() => {
   var __defProp = Object.defineProperty;
   var __defProps = Object.defineProperties;
@@ -40,173 +41,264 @@ var CustomImportScript = (() => {
     default: () => import_homepage_default
   });
 
-  // tools/importer/parsers/hero-gallery.js
+  // tools/importer/parsers/hero-banner.js
   function parse(element, { document }) {
-    const bgImage = element.querySelector("img");
-    const heading = element.querySelector("h1, h2");
-    const subheadings = [];
-    const h2Elements = element.querySelectorAll("h2, h3");
-    h2Elements.forEach((h) => {
-      if (h !== heading) {
-        subheadings.push(h);
-      }
-    });
-    const descriptions = Array.from(element.querySelectorAll("p")).filter(
-      (p) => !p.closest("a")
-    );
-    const ctaLinks = Array.from(
-      element.querySelectorAll("a.btn, a.button, a.cta, .field--type-link a, a[href]")
-    ).filter((a) => {
-      const text = a.textContent.trim();
-      return text.length > 0 && !a.querySelector("img");
-    });
+    const bgImage = element.querySelector(".cmp-image__image, .cmp-teaser__image img");
+    const pretitle = element.querySelector(".cmp-teaser__pretitle");
+    const heading = element.querySelector("h1.cmp-teaser__title, h2.cmp-teaser__title, .cmp-teaser__title");
+    const description = element.querySelector(".cmp-teaser__description p, .cmp-teaser__description");
+    const ctaLinks = Array.from(element.querySelectorAll(".cmp-teaser__action-link, .cmp-teaser__action-container a"));
     const cells = [];
     if (bgImage) {
       cells.push([bgImage]);
     }
-    const contentCell = [];
+    const contentWrapper = document.createElement("div");
     if (heading) {
-      contentCell.push(heading);
+      contentWrapper.append(heading);
     }
-    subheadings.forEach((sub) => {
-      contentCell.push(sub);
-    });
-    descriptions.forEach((desc) => {
-      contentCell.push(desc);
-    });
-    ctaLinks.forEach((cta) => {
-      contentCell.push(cta);
-    });
-    if (contentCell.length > 0) {
-      cells.push(contentCell);
+    if (pretitle && pretitle.textContent.trim()) {
+      const subHeading = document.createElement("h2");
+      subHeading.textContent = pretitle.textContent.trim();
+      contentWrapper.append(subHeading);
     }
-    const block = WebImporter.Blocks.createBlock(document, { name: "hero-gallery", cells });
+    if (description) {
+      contentWrapper.append(description);
+    }
+    if (ctaLinks.length > 0) {
+      ctaLinks.forEach((link) => contentWrapper.append(link));
+    }
+    if (contentWrapper.children.length > 0) {
+      cells.push([contentWrapper]);
+    }
+    const block = WebImporter.Blocks.createBlock(document, { name: "hero-banner", cells });
     element.replaceWith(block);
   }
 
-  // tools/importer/parsers/cards-exhibition.js
+  // tools/importer/parsers/cards-feature.js
   function parse2(element, { document }) {
-    const teaserItems = element.querySelectorAll(".teaser-item article.teaser-card, .views-row article.teaser-card");
     const cells = [];
-    teaserItems.forEach((card) => {
-      const link = card.querySelector("a[href]");
-      const href = link ? link.getAttribute("href") : null;
-      const img = card.querySelector(".teaser-image img, img.img-fluid");
-      const title = card.querySelector("h3.teaser-title, .teaser-content-inner h3");
-      const dateField = card.querySelector(".field--name-field-dates .field__item, .field__item");
+    const isSingleTeaser = element.classList.contains("teaser__v2--image-left-aligned") || element.querySelector(":scope > .cmp-teaser") || element.classList.contains("cmp-teaser");
+    const coloredButtons = element.querySelectorAll(".coloredButton a.cmp-button, a.coloredButtonCmp");
+    const firstTrack = element.querySelector(".slick-track");
+    const carouselSlides = firstTrack ? Array.from(firstTrack.querySelectorAll(":scope > .slick-slide:not(.slick-cloned)")).filter((s) => {
+      const idx = parseInt(s.getAttribute("data-slick-index"), 10);
+      return !Number.isNaN(idx) && idx >= 0;
+    }) : [];
+    const teaserCards = !isSingleTeaser ? element.querySelectorAll('.teaser__v2--image-left-aligned, [class*="teaser__v2"]') : [];
+    if (isSingleTeaser) {
+      const source = element.querySelector(".cmp-teaser") || element;
+      const image = source.querySelector(".cmp-teaser__image img, img");
+      const title = source.querySelector(".cmp-teaser__pretitle, .cmp-teaser__title, h2, h3, h4");
+      const description = source.querySelector(".cmp-teaser__description p, .cmp-teaser__description");
+      const cta = source.querySelector(".cmp-teaser__action-link, .cmp-teaser__action-container a");
+      const imageCell = image ? [image] : "";
       const contentCell = [];
-      if (title) {
-        const h3 = document.createElement("h3");
-        h3.textContent = title.textContent.trim();
-        contentCell.push(h3);
+      if (title) contentCell.push(title);
+      if (description && description !== title) contentCell.push(description);
+      if (cta) contentCell.push(cta);
+      if (imageCell || contentCell.length > 0) {
+        cells.push([imageCell, contentCell.length > 0 ? contentCell : ""]);
       }
-      if (dateField) {
-        const p = document.createElement("p");
-        p.textContent = dateField.textContent.trim();
-        contentCell.push(p);
-      }
-      if (href) {
-        const a = document.createElement("a");
-        a.href = href;
-        a.textContent = title ? title.textContent.trim() : "View Exhibition";
-        contentCell.push(a);
-      }
-      const imageCell = [];
-      if (img) {
-        const imgEl = document.createElement("img");
-        imgEl.src = img.getAttribute("src") || "";
-        imgEl.alt = img.getAttribute("alt") || "";
-        imageCell.push(imgEl);
-      }
-      if (imageCell.length > 0 || contentCell.length > 0) {
-        cells.push([imageCell, contentCell]);
-      }
-    });
-    const block = WebImporter.Blocks.createBlock(document, { name: "cards-exhibition", cells });
-    element.replaceWith(block);
-  }
-
-  // tools/importer/parsers/columns-info.js
-  function parse3(element, { document }) {
-    const tileColumns = element.querySelectorAll(".mb-4 a.icon-tile-item");
-    const row = [];
-    tileColumns.forEach((tile) => {
-      const cellContent = [];
-      const heading = tile.querySelector(".tile-heading h3");
-      const href = tile.getAttribute("href");
-      if (heading) {
-        const link = document.createElement("a");
-        link.setAttribute("href", href || "#");
-        link.textContent = heading.textContent.trim();
-        const h3 = document.createElement("h3");
-        h3.appendChild(link);
-        cellContent.push(h3);
-      }
-      const bodyParagraphs = tile.querySelectorAll(".tile-body p");
-      bodyParagraphs.forEach((p) => {
-        const text = p.textContent.trim();
-        if (text && text !== "\xA0") {
-          cellContent.push(p);
+    } else if (teaserCards.length > 0) {
+      teaserCards.forEach((teaser) => {
+        const source = teaser.querySelector(".cmp-teaser") || teaser;
+        const image = source.querySelector(".cmp-teaser__image img, img");
+        const title = source.querySelector(".cmp-teaser__pretitle, .cmp-teaser__title, h2, h3, h4");
+        const description = source.querySelector(".cmp-teaser__description p, .cmp-teaser__description");
+        const cta = source.querySelector(".cmp-teaser__action-link, .cmp-teaser__action-container a");
+        const imageCell = image ? [image] : "";
+        const contentCell = [];
+        if (title) contentCell.push(title);
+        if (description && description !== title) contentCell.push(description);
+        if (cta) contentCell.push(cta);
+        if (imageCell || contentCell.length > 0) {
+          cells.push([imageCell, contentCell.length > 0 ? contentCell : ""]);
         }
       });
-      if (cellContent.length > 0) {
-        row.push(cellContent);
+    } else if (carouselSlides.length > 0) {
+      const seenTitles = [];
+      for (let i = 0; i < carouselSlides.length; i += 1) {
+        const slide = carouselSlides[i];
+        const titleEl = slide.querySelector("h3, h4");
+        if (!titleEl) continue;
+        const normalizedTitle = titleEl.textContent.replace(/\s+/g, " ").trim().toLowerCase();
+        if (seenTitles.indexOf(normalizedTitle) !== -1) continue;
+        seenTitles.push(normalizedTitle);
+        const image = slide.querySelector(".cmp-teaser__image img, .cmp-image__image, img");
+        const title = titleEl;
+        const descParts = slide.querySelectorAll("li, .cmp-teaser__description p, p:not(:empty)");
+        const cta = slide.querySelector('.cmp-teaser__action-link, a[class*="action"], a[class*="button"]');
+        const imageCell = image ? [image] : "";
+        const contentCell = [];
+        contentCell.push(title);
+        descParts.forEach((part) => {
+          if (part.textContent.trim()) contentCell.push(part);
+        });
+        if (cta) contentCell.push(cta);
+        cells.push([imageCell, contentCell]);
       }
-    });
-    const cells = [];
-    if (row.length > 0) {
-      cells.push(row);
+    } else if (coloredButtons.length > 0) {
+      coloredButtons.forEach((button) => {
+        const text = button.querySelector(".cmp-button__text");
+        const href = button.getAttribute("href");
+        const contentCell = [];
+        if (text) {
+          const titleEl = document.createElement("strong");
+          titleEl.textContent = text.textContent.trim();
+          contentCell.push(titleEl);
+        }
+        if (href) {
+          const link = document.createElement("a");
+          link.href = href;
+          link.textContent = text ? text.textContent.trim() : href;
+          contentCell.push(link);
+        }
+        if (contentCell.length > 0) {
+          cells.push(["", contentCell]);
+        }
+      });
     }
-    const block = WebImporter.Blocks.createBlock(document, { name: "columns-info", cells });
+    if (cells.length === 0) {
+      const image = element.querySelector("img");
+      const heading = element.querySelector('h2, h3, h4, strong, .cmp-title__text, [class*="pretitle"], [class*="title"]');
+      const desc = element.querySelector('p, .cmp-text, [class*="description"]');
+      const link = element.querySelector('a[class*="action"], a[class*="button"], a');
+      const imageCell = image ? [image] : "";
+      const contentCell = [];
+      if (heading) contentCell.push(heading);
+      if (desc && desc !== heading) contentCell.push(desc);
+      if (link && link !== heading && link !== desc) contentCell.push(link);
+      if (contentCell.length > 0) {
+        cells.push([imageCell, contentCell]);
+      }
+    }
+    const block = WebImporter.Blocks.createBlock(document, { name: "cards-feature", cells });
     element.replaceWith(block);
   }
 
-  // tools/importer/transformers/galleries-cleanup.js
+  // tools/importer/parsers/columns-media.js
+  function parse3(element, { document }) {
+    const cells = [];
+    const iframe = element.querySelector("iframe");
+    const teaserImage = element.querySelector(".cmp-teaser__image img, img");
+    const teaserTitle = element.querySelector(".cmp-teaser__title, h2, h3, h4");
+    const teaserDescription = element.querySelector(".cmp-teaser__description, p");
+    const teaserLink = element.querySelector(".cmp-teaser__action-link, a.cmp-button, a");
+    if (iframe) {
+      const videoSrc = iframe.getAttribute("src") || "";
+      const videoTitle = iframe.getAttribute("title") || "";
+      const videoLink = document.createElement("a");
+      videoLink.href = videoSrc;
+      videoLink.textContent = videoTitle || videoSrc;
+      const textContent = [];
+      if (videoTitle) {
+        const titleEl = document.createElement("p");
+        titleEl.textContent = videoTitle;
+        textContent.push(titleEl);
+      }
+      cells.push([videoLink, textContent.length > 0 ? textContent : ""]);
+    } else if (teaserImage || teaserTitle) {
+      const mediaContent = [];
+      const textContent = [];
+      if (teaserImage) mediaContent.push(teaserImage);
+      if (teaserTitle) textContent.push(teaserTitle);
+      if (teaserDescription) textContent.push(teaserDescription);
+      if (teaserLink && teaserLink !== teaserTitle) textContent.push(teaserLink);
+      cells.push([
+        mediaContent.length > 0 ? mediaContent : "",
+        textContent.length > 0 ? textContent : ""
+      ]);
+    } else {
+      const images = element.querySelectorAll("img");
+      const headings = element.querySelectorAll("h1, h2, h3, h4, h5, h6");
+      const paragraphs = element.querySelectorAll("p");
+      const links = element.querySelectorAll("a");
+      const mediaContent = [];
+      const textContent = [];
+      if (images.length > 0) mediaContent.push(images[0]);
+      if (headings.length > 0) textContent.push(headings[0]);
+      if (paragraphs.length > 0) textContent.push(paragraphs[0]);
+      if (links.length > 0) textContent.push(links[0]);
+      cells.push([
+        mediaContent.length > 0 ? mediaContent : "",
+        textContent.length > 0 ? textContent : ""
+      ]);
+    }
+    const block = WebImporter.Blocks.createBlock(document, { name: "columns-media", cells });
+    element.replaceWith(block);
+  }
+
+  // tools/importer/parsers/carousel-campus.js
+  function parse4(element, { document }) {
+    const slides = element.querySelectorAll(".slick-slide:not(.slick-cloned) .cmp-carousel__item");
+    const cells = [];
+    slides.forEach((slide) => {
+      const imageContainer = slide.querySelector(".cmp-image");
+      if (!imageContainer) return;
+      const img = imageContainer.querySelector("img.cmp-image__image");
+      const link = imageContainer.querySelector("a.cmp-image__link");
+      const captionSpan = imageContainer.querySelector("span.caption-text, .caption-text");
+      if (!img) return;
+      let imageCell;
+      if (link) {
+        const newLink = document.createElement("a");
+        newLink.href = link.getAttribute("href");
+        const newImg = img.cloneNode(true);
+        newLink.appendChild(newImg);
+        imageCell = newLink;
+      } else {
+        imageCell = img.cloneNode(true);
+      }
+      const contentCell = [];
+      const captionText = captionSpan ? captionSpan.textContent.trim() : img.getAttribute("alt") || "";
+      if (captionText) {
+        const heading = document.createElement("h2");
+        heading.textContent = captionText;
+        contentCell.push(heading);
+      }
+      cells.push([imageCell, contentCell]);
+    });
+    const block = WebImporter.Blocks.createBlock(document, { name: "carousel-campus", cells });
+    element.replaceWith(block);
+  }
+
+  // tools/importer/transformers/holmesglen-cleanup.js
   var TransformHook = { beforeTransform: "beforeTransform", afterTransform: "afterTransform" };
   function transform(hookName, element, payload) {
     if (hookName === TransformHook.beforeTransform) {
-      WebImporter.DOMUtils.remove(element, [
-        "#onetrust-consent-sdk",
-        "#galleriesCountryAcknowledgement",
-        ".modal-backdrop",
-        "#drupal-live-announce",
-        ".skip-link"
-      ]);
-      if (element.style && element.style.overflow === "hidden") {
-        element.style.overflow = "auto";
-      }
+      WebImporter.DOMUtils.remove(element, [".embed-modal"]);
     }
     if (hookName === TransformHook.afterTransform) {
-      WebImporter.DOMUtils.remove(element, [
-        "header#header-wrapper",
-        "footer.layout-footer",
-        ".social-media-links-mobile-wrapper",
-        "iframe",
-        "link",
-        "noscript"
-      ]);
+      WebImporter.DOMUtils.remove(element, [".cmp-experiencefragment--header-version-2"]);
+      WebImporter.DOMUtils.remove(element, [".cmp-experiencefragment--new-footer"]);
+      WebImporter.DOMUtils.remove(element, [".find-course-search"]);
+      WebImporter.DOMUtils.remove(element, [".aamIframeLoaded", 'iframe[src*="doubleclick.net"]']);
+      const trackingIframes = element.querySelectorAll('iframe[src*="demdex.net"]');
+      trackingIframes.forEach((iframe) => iframe.remove());
+      const strayMetas = element.querySelectorAll("meta");
+      strayMetas.forEach((meta) => meta.remove());
     }
   }
 
-  // tools/importer/transformers/galleries-sections.js
+  // tools/importer/transformers/holmesglen-sections.js
   var TransformHook2 = { beforeTransform: "beforeTransform", afterTransform: "afterTransform" };
   function transform2(hookName, element, payload) {
     if (hookName === TransformHook2.afterTransform) {
-      const { document } = payload;
-      const sections = payload.template && payload.template.sections;
+      const sections = payload && payload.template && payload.template.sections;
       if (!sections || sections.length < 2) return;
-      const reversedSections = [...sections].reverse();
-      for (const section of reversedSections) {
+      const document = element.ownerDocument;
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = sections[i];
         const sectionEl = element.querySelector(section.selector);
         if (!sectionEl) continue;
         if (section.style) {
-          const metadataBlock = WebImporter.Blocks.createBlock(document, {
+          const sectionMetadata = WebImporter.Blocks.createBlock(document, {
             name: "Section Metadata",
             cells: { style: section.style }
           });
-          sectionEl.after(metadataBlock);
+          sectionEl.after(sectionMetadata);
         }
-        if (section.id !== sections[0].id) {
+        if (i > 0) {
           const hr = document.createElement("hr");
           sectionEl.before(hr);
         }
@@ -215,81 +307,113 @@ var CustomImportScript = (() => {
   }
 
   // tools/importer/import-homepage.js
-  var parsers = {
-    "hero-gallery": parse,
-    "cards-exhibition": parse2,
-    "columns-info": parse3
-  };
   var PAGE_TEMPLATE = {
     name: "homepage",
-    description: "UNSW Galleries homepage with hero imagery, exhibition listings, and gallery information",
+    description: "Holmesglen Institute homepage with hero banner, course categories, news, and campus information",
     urls: [
-      "https://www.galleries.unsw.edu.au"
+      "https://www.holmesglen.edu.au/"
     ],
     blocks: [
       {
-        name: "hero-gallery",
+        name: "hero-banner",
         instances: [
-          ".section-wrapper.hero_section"
+          ".carousel__heroBanner .teaser__hero-banner"
         ]
       },
       {
-        name: "cards-exhibition",
+        name: "cards-feature",
         instances: [
-          ".view-display-id-block_1 .teaser-items.grid",
-          ".view-display-id-block_2 .teaser-items.grid"
+          ".container__browseByStudyArea .container__browseby",
+          ".multiSlideCarousel__demand-skills",
+          ".container__3-col-grid .teaser__v2--image-left-aligned"
         ]
       },
       {
-        name: "columns-info",
+        name: "columns-media",
         instances: [
-          ".cta-tile"
+          ".container__embed3item__layout .cmp-embed",
+          ".teaser__v1--image-right"
+        ]
+      },
+      {
+        name: "carousel-campus",
+        instances: [
+          ".multiSlideCarousel__course-detail"
         ]
       }
     ],
     sections: [
       {
         id: "section-1",
-        name: "Hero",
-        selector: ".section-wrapper.hero_section",
+        name: "Hero Banner",
+        selector: ".carousel__heroBanner",
         style: "dark",
-        blocks: ["hero-gallery"],
+        blocks: ["hero-banner"],
         defaultContent: []
       },
       {
         id: "section-2",
-        name: "Current & Upcoming Exhibitions",
-        selector: ".section-wrapper.onecolumn_section.bg-alternative:has(.view-display-id-block_1)",
-        style: "grey",
-        blocks: ["cards-exhibition"],
-        defaultContent: [
-          ".section-wrapper.onecolumn_section.bg-alternative:has(.view-display-id-block_1) .bs_grid h3",
-          ".section-wrapper.onecolumn_section.bg-alternative:has(.view-display-id-block_1) .bs_grid .btn"
-        ]
+        name: "Browse by Study Area",
+        selector: ".container__browseByStudyArea",
+        style: null,
+        blocks: ["cards-feature"],
+        defaultContent: [".container__browseByStudyArea .cmp-title__text"]
       },
       {
         id: "section-3",
-        name: "Upcoming Programs",
-        selector: ".section-wrapper.onecolumn_section:not(.bg-alternative):has(.view-display-id-block_2)",
+        name: "Study Levels",
+        selector: ".container__browseby:nth-of-type(2)",
         style: null,
-        blocks: ["cards-exhibition"],
-        defaultContent: [
-          ".section-wrapper.onecolumn_section:not(.bg-alternative):has(.view-display-id-block_2) .bs_grid h3",
-          ".section-wrapper.onecolumn_section:not(.bg-alternative):has(.view-display-id-block_2) .bs_grid .btn"
-        ]
+        blocks: [],
+        defaultContent: [".container__browseby .cmp-title__text"]
       },
       {
         id: "section-4",
-        name: "About Us",
-        selector: ".section-wrapper.onecolumn_section.bg-alternative:has(.cta-tile)",
+        name: "Student Testimonials",
+        selector: ".container__embed3item__layout",
+        style: null,
+        blocks: ["columns-media"],
+        defaultContent: [".container__embed3item__layout .cmp-title__text"]
+      },
+      {
+        id: "section-5",
+        name: "Study In-Demand Skills",
+        selector: ".container__study-in-demand",
+        style: "brand-primary",
+        blocks: ["cards-feature"],
+        defaultContent: [".teaser__studydemand .cmp-teaser__title", ".teaser__studydemand .cmp-teaser__description"]
+      },
+      {
+        id: "section-6",
+        name: "Feature Cards",
+        selector: ".container__pt-xl-80:has(.container__3-col-grid)",
+        style: null,
+        blocks: ["cards-feature"],
+        defaultContent: []
+      },
+      {
+        id: "section-7",
+        name: "International Student",
+        selector: ".container__pt-xl-40:has(.teaser__v1--image-right)",
         style: "grey",
-        blocks: ["columns-info"],
-        defaultContent: [
-          ".section-wrapper.onecolumn_section.bg-alternative:has(.cta-tile) .bs_grid h3",
-          ".section-wrapper.onecolumn_section.bg-alternative:has(.cta-tile) .bs_grid .btn"
-        ]
+        blocks: ["columns-media"],
+        defaultContent: []
+      },
+      {
+        id: "section-8",
+        name: "Campus Carousel",
+        selector: ".container__bg-primary:has(.multiSlideCarousel__course-detail)",
+        style: "dark",
+        blocks: ["carousel-campus"],
+        defaultContent: []
       }
     ]
+  };
+  var parsers = {
+    "hero-banner": parse,
+    "cards-feature": parse2,
+    "columns-media": parse3,
+    "carousel-campus": parse4
   };
   var transformers = [
     transform,

@@ -1,0 +1,32 @@
+{
+  "variantName": "cards-feature",
+  "baseBlock": "cards",
+  "version": "1.0.0",
+  "created": "2026-05-07T03:04:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://www.holmesglen.edu.au/",
+    "originPage": "Holmesglen Institute homepage",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "compact",
+    "purpose": "feature-cards",
+    "imagePattern": "large",
+    "structure": "image + title + description + CTA"
+  },
+  "contentPattern": {
+    "structure": "image + title + description + CTA",
+    "buttonCount": 1,
+    "imageCount": 1
+  },
+  "reuseGuidance": {
+    "suitableFor": ["feature teasers", "course category cards", "promotional cards with images"],
+    "notSuitableFor": ["text-only cards", "data-heavy cards without images"]
+  },
+  "usage": {
+    "pagesUsing": ["/index"],
+    "reuseCount": 1,
+    "lastUsed": "2026-05-07T03:04:00.000Z"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "variantName": "columns-media",
+  "baseBlock": "columns",
+  "version": "1.0.0",
+  "created": "2026-05-07T03:04:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://www.holmesglen.edu.au/",
+    "originPage": "Holmesglen Institute homepage",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "spacious",
+    "purpose": "media-layout",
+    "imagePattern": "large",
+    "structure": "image + text side-by-side"
+  },
+  "contentPattern": {
+    "structure": "image/video + text content",
+    "buttonCount": 1,
+    "imageCount": 1
+  },
+  "reuseGuidance": {
+    "suitableFor": ["video embed sections", "image + text CTA layouts", "international student promotions"],
+    "notSuitableFor": ["text-only multi-column layouts", "data-heavy tables"]
+  },
+  "usage": {
+    "pagesUsing": ["/index"],
+    "reuseCount": 1,
+    "lastUsed": "2026-05-07T03:04:00.000Z"
+  }
+}

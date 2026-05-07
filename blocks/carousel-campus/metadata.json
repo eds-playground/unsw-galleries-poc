@@ -1,0 +1,32 @@
+{
+  "variantName": "carousel-campus",
+  "baseBlock": "carousel",
+  "version": "1.0.0",
+  "created": "2026-05-07T03:04:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://www.holmesglen.edu.au/",
+    "originPage": "Holmesglen Institute homepage",
+    "blockPosition": "bottom"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "dark",
+    "density": "spacious",
+    "purpose": "campus-gallery",
+    "imagePattern": "large",
+    "structure": "image slides with captions"
+  },
+  "contentPattern": {
+    "structure": "image + caption per slide",
+    "buttonCount": 0,
+    "imageCount": 6
+  },
+  "reuseGuidance": {
+    "suitableFor": ["campus/location galleries", "image carousels with captions", "facility showcases"],
+    "notSuitableFor": ["text-heavy carousels", "product carousels with CTAs"]
+  },
+  "usage": {
+    "pagesUsing": ["/index"],
+    "reuseCount": 1,
+    "lastUsed": "2026-05-07T03:04:00.000Z"
+  }
+}
